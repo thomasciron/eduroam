@@ -1,7 +1,7 @@
 # eduroam
 Programme qui lance un ping régulièrement. Si le ping échoue, le programme se déconnecte d'eduroam et s'y reconnecte. Ce programme ne sert qu'à une chose : réparer l'eduroam italien qui plante souvent.
 
-Pour compile : 
+Pour compiler : 
 ````console
 g++ -o eduroam.exe eduroam.cpp
 ````

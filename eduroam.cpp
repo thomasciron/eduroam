@@ -39,6 +39,17 @@ void reconnect()
 }
 
 /**
+ * @brief Forget the eduroam network and reconnect to it.
+ * 
+ */
+void reset_eduroam()
+{
+    system("netsh wlan delete profile name=\"eduroam\"");
+    wait(5);
+    system("netsh wlan add profile filename=\"eduroam.xml\"");
+}
+
+/**
  * @brief Get the current hour of the system.
  * 
  * @return int The current hour of the system.
