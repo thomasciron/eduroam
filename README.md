@@ -4,7 +4,7 @@ Programme qui lance un ping régulièrement. Si le ping échoue, le programme se
 Pour compile : 
 ````console
 g++ -o eduroam.exe eduroam.cpp
-```
+````
 
 ## Problème connu
 Parfois se déconnecter et s'y reconnecter ne suffit pas, il faudrait pouvoir oublier le réseau et l'enregistrer à nouveau.
