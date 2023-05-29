@@ -7,13 +7,15 @@
 using namespace std;
 using namespace chrono;
 
+unsigned int SCRIPT_END_TIME_HOUR = 18;
 
-// Déclaration des fonctions
-void reconnect();
-int get_heure();
-bool check_internet();
-
-void wait(int time_in_seconds) {
+/**
+ * @brief The programm sleeps for a moment. It prompts the remaining time he is sleeping.
+ * 
+ * @param time_in_seconds The time during the programm will sleep.
+ */
+void wait(int time_in_seconds) 
+{
     for(int i = 0; i < time_in_seconds;i++) {
         if (time_in_seconds - i == 1) cout << "Attente pendant 1 seconde...            \r";
         else cout << "Pause du programme pendant " << time_in_seconds - i << " secondes...            \r";
@@ -22,28 +24,10 @@ void wait(int time_in_seconds) {
     cout << "Execution du script en cours...            \r";
 }
 
-int main()
-{
-    bool is_connected = true;
-    unsigned int nb_iterations = 0;
-    while (get_heure() < 18)
-    {
-        if (!check_internet())
-        {
-            cout << "La connexion internet n'a pas abouti. Tentative de reconnexion...\n";
-            //cout << "The internet connection failed. Try for reconnection...\n";
-            reconnect();
-        }
-        else cout << "Connexion OK.            \r";
-        // Attente de 15 secondes
-        wait(15);
-    }
-
-    cout << "Fin du script : il est 18h.\n";
-    //cout << "The script stopped because it's passed 6 PM..\n";
-    return 0;
-}
-
+/**
+ * @brief Use Windows shell command to disconnect and reconnect eduroam.
+ * 
+ */
 void reconnect()
 {
     // Déconnexion de tous les adaptateurs réseau
@@ -54,23 +38,33 @@ void reconnect()
     system("netsh wlan connect name=\"eduroam\"");
 }
 
-int get_heure()
+/**
+ * @brief Get the current hour of the system.
+ * 
+ * @return int The current hour of the system.
+ */
+int get_hour()
 {
-    // Obtenir l'heure actuelle
     time_t now = time(nullptr);
     tm ltm = *localtime(&now);
-    // Obtenir l'heure en format 24h
     int heure = ltm.tm_hour;
     return heure;
 }
 
-bool check_internet()
+/**
+ * @brief Check if the device is connected to the internet.
+ * 
+ * @return true if the device is connected to the internet.
+ * @return false if the devise isn't connected to the internet.
+ */
+bool check_if_connected_to_the_internet()
 {
-    // Vérifier la connexion à Internet en exécutant une commande ping
+    // Check the connection to the internet by running a ping command
     cout << "Ping de Google en cours...            \r";
     system("ping google.com -n 1 > eduroam.tmp");
     cout << "Verification de la connexion...            \r";
-    // Lire la sortie du ping
+
+    // Read the ping output
     FILE* file = fopen("eduroam.tmp", "r");
     char buffer[100];
     bool result_ping = false;
@@ -84,4 +78,29 @@ bool check_internet()
     }
     fclose(file);
     return result_ping;
+}
+
+int main()
+{
+    bool is_connected;
+    unsigned int nb_iterations;
+    while (get_hour() < SCRIPT_END_TIME_HOUR)
+    {
+        is_connected = false;
+        nb_iterations = 0;
+        while(!is_connected && nb_iterations < 5) {
+            if(check_if_connected_to_the_internet()) is_connected = true;
+            else {
+                nb_iterations ++;
+                cout << "La connexion internet n'a pas abouti. Tentative de reconnexion...\n";
+                reconnect();
+            }
+        }
+        if (is_connected) cout << "Connexion OK.            \r";
+        // Waiting for 15 seconds for the next attempt.
+        wait(15);
+    }
+
+    cout << "Fin du script : il est " << SCRIPT_END_TIME_HOUR << "h.\n";
+    return 0;
 }
