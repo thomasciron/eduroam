@@ -72,7 +72,7 @@ bool check_if_connected_to_the_internet()
 {
     // Check the connection to the internet by running a ping command
     cout << "Ping de Google en cours...            \r";
-    system("ping google.com -n 1 > eduroam.tmp");
+    system("curl google.com > eduroam.tmp");
     cout << "Verification de la connexion...            \r";
 
     // Read the ping output
@@ -81,7 +81,7 @@ bool check_if_connected_to_the_internet()
     bool result_ping = false;
     while (fgets(buffer, 100, file))
     {
-        if (strstr(buffer, "perte 0%") != nullptr)
+        if (strstr(buffer, "<HTML>") != nullptr)
         {
             result_ping = true;
             break;
