@@ -1,16 +1,23 @@
 # eduroam
-Programme qui lance un ping régulièrement. Si le ping échoue, le programme se déconnecte d'eduroam et s'y reconnecte. Ce programme ne sert qu'à une chose : réparer l'eduroam italien qui plante souvent.
+Script that checks the internet connection every 15 seconds. If the test fails, the script disconnets the laptop from eduroam and connects to it again. This script has only one aim : fix the Italian eduroam who crashs often.
 
-Pour compiler : 
-````console
+To compile :
+```console
 g++ -o eduroam.exe eduroam.cpp
-````
+```
 
-## Problème connu
-Parfois se déconnecter et s'y reconnecter ne suffit pas, il faudrait pouvoir oublier le réseau et l'enregistrer à nouveau.
+## Known problems
+Sometimes, disconnecting and connecting from eduroam isn't engouh. The script should be able to forget the network and to log in again (a fix was implemented but has not been tested yet).
 
-## Historique des versions
+
+## Releases
 ### Version 1
-Le script marche mais n'affiche rien. Le script s'arrête tout seul après 18h car on arrête de travailler vers 17h.
+The script functions (ping google.com and writes the result in `eduroam.tmp`) but doesn't prompt anything. The script stops itself after 6 PM because we stop to work after 5 PM.
+
 ### Version 2
-Le script affiche tout ce qu'il fait. Le nombre de ping à Google passe de 4 à 1 (le script mettait un peu de temps avant de comprendre qu'il n'était pas connecté à internet avant).
+The script prompts whatever he does. The number of ping to Google went done from 4 to 1 (the scripts could take some times before to understand that it wasn't connected to the internet before).
+
+### Version 3
+Change the ping by curl, because it is faster and more reliable. 
+
+If the connection test fails five times in a row, it will forget the eduroam network and log in to it again thanks to `eduraom.xml` (**feature not tested !**).
